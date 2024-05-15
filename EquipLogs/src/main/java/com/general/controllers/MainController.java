@@ -362,7 +362,7 @@ public class MainController {
 
     @FXML
     protected void dataDeletion() {
-
+        showMessage("Va fi adaugat in viitor!");
     }
 
     /*
