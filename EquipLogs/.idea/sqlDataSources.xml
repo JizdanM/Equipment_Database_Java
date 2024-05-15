@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="3682422f-21c0-447f-9c45-c6518d3db2f1" name="Echipamente Mapping">
+      <data-sources db="6263ba43-6888-420e-87cf-738af17a74a4" />
+      <scope>
+        <node kind="database" qname="Echipamente" />
+      </scope>
+    </mapping>
+  </component>
+</project>
