@@ -1,6 +1,6 @@
 package com.general.entity;
 
-public class Equipment extends Category {
+public class Equipment extends Category implements DeletableEntity {
     private String equipName;
 
     public Equipment(int id, String equipName, String category) {
@@ -14,5 +14,10 @@ public class Equipment extends Category {
 
     public void setEquipName(String equipName) {
         this.equipName = equipName;
+    }
+
+    @Override
+    public int getId() {
+        return super.getId();
     }
 }

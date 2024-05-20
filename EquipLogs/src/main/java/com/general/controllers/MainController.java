@@ -1,11 +1,8 @@
 package com.general.controllers;
 
 import com.general.daologic.RequestDAO;
+import com.general.entity.*;
 import com.general.equiplogs.MainApp;
-import com.general.entity.Category;
-import com.general.entity.Equipment;
-import com.general.entity.Logs;
-import com.general.entity.Student;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,8 +19,11 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.util.Objects;
+import java.util.Optional;
 
 public class MainController {
+    private static String selectedTable = "";
+
     @FXML
     private TableView equipTable;
 
@@ -91,12 +91,10 @@ public class MainController {
         });
 
         btnEdit.setOnAction(event -> {
-            hideReturnButton();
             dataEdit();
         });
 
         btnDelete.setOnAction(event -> {
-            hideReturnButton();
             dataDeletion();
         });
     }
@@ -157,6 +155,7 @@ public class MainController {
             }
 
             equipTable.setItems(equipList);
+            selectedTable = "equipment";
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -186,6 +185,7 @@ public class MainController {
             }
 
             equipTable.setItems(categoryList);
+            selectedTable = "category";
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -229,6 +229,7 @@ public class MainController {
             }
 
             equipTable.setItems(studentList);
+            selectedTable = "students";
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -331,6 +332,7 @@ public class MainController {
             }
 
             equipTable.setItems(logList);
+            selectedTable = "logs";
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -351,7 +353,7 @@ public class MainController {
             primaryStage.initOwner(equipTable.getScene().getWindow());
             primaryStage.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -362,7 +364,83 @@ public class MainController {
 
     @FXML
     protected void dataDeletion() {
-        showMessage("Va fi adaugat in viitor!");
+        try {
+            DeletableEntity selectedEquipment = (DeletableEntity) equipTable.getSelectionModel().getSelectedItem();
+
+            if (selectedEquipment != null) {
+                switch (selectedTable) {
+                    case "equipment": {
+                        Optional<ButtonType> result = deleteConfirmationWindow();
+
+                        if (result.isPresent() && result.get() == ButtonType.OK){
+                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_EQUIPMENT + selectedEquipment.getId());
+                            if (updatedLines != 0) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Stergere");
+                                alert.setContentText("Datele au fost sterse cu success");
+                                alert.showAndWait();
+
+                                showEquipment();
+                            }
+                        }
+                    }
+                        break;
+                    case "category": {
+                        Optional<ButtonType> result = deleteConfirmationWindow();
+
+                        if (result.isPresent() && result.get() == ButtonType.OK){
+                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_CATEGORY + selectedEquipment.getId());
+                            if (updatedLines != 0) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Stergere");
+                                alert.setContentText("Datele au fost sterse cu success");
+                                alert.showAndWait();
+
+                                showCategory();
+                            }
+                        }
+                    }
+                        break;
+                    case "students": {
+                        Optional<ButtonType> result = deleteConfirmationWindow();
+
+                        if (result.isPresent() && result.get() == ButtonType.OK){
+                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_STUDENT + selectedEquipment.getId());
+                            if (updatedLines != 0) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Stergere");
+                                alert.setContentText("Datele au fost sterse cu success");
+                                alert.showAndWait();
+
+                                showStudents();
+                            }
+                        }
+                    }
+                        break;
+                    case "logs": {
+                        Optional<ButtonType> result = deleteConfirmationWindow();
+
+                        if (result.isPresent() && result.get() == ButtonType.OK){
+                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_LOGS + selectedEquipment.getId());
+                            if (updatedLines != 0) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Stergere");
+                                alert.setContentText("Datele au fost sterse cu success");
+                                alert.showAndWait();
+
+                                showLogs();
+                            }
+                        }
+                    }
+                    break;
+                }
+            } else {
+                showError("Nu ati selectat logul!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
     }
 
     /*
@@ -413,7 +491,7 @@ public class MainController {
         btnReturn.setDisable(true);
     }
 
-    private void showError(String message) {
+    private static void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Eroare");
         alert.setHeaderText(null);
@@ -421,12 +499,21 @@ public class MainController {
         alert.showAndWait();
     }
 
-    private void showMessage(String message) {
+    private static void showMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Mesaj");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private static Optional<ButtonType> deleteConfirmationWindow() {
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Confirmare");
+        confirmationAlert.setHeaderText("Sunteti siguri ca doriti sa stergeti inregistrarea?");
+        confirmationAlert.setContentText("Confirmati actiunea.");
+
+        return confirmationAlert.showAndWait();
     }
 
     public void setStage(Stage stage){

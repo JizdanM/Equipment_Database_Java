@@ -1,6 +1,6 @@
 package com.general.entity;
 
-public class Student {
+public class Student implements DeletableEntity {
     private int id;
     private String name;
     private String surname;
@@ -17,6 +17,7 @@ public class Student {
         this.phoneNr = phoneNr;
     }
 
+    @Override
     public int getId() {
         return id;
     }

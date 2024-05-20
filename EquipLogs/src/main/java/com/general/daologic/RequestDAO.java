@@ -10,6 +10,9 @@ public class RequestDAO {
     ConnectDAO connectDAO = new ConnectDAO();
     Connection connection = connectDAO.getConnection();
 
+    public RequestDAO() throws IOException {
+    }
+
     /*
     /// -----Database calls
      */
@@ -37,8 +40,14 @@ public class RequestDAO {
 
     public static final String RETURN_EQUIPMENT = "UPDATE logs SET returned = true WHERE id = ";
 
-    public RequestDAO() throws IOException {
-    }
+    /*
+    /// -----Deletion calls
+     */
+
+    public static final String DELETE_CATEGORY = "DELETE FROM category WHERE id = ";
+    public static final String DELETE_EQUIPMENT = "DELETE FROM equipment WHERE id = ";
+    public static final String DELETE_STUDENT = "DELETE FROM students WHERE id = ";
+    public static final String DELETE_LOGS = "DELETE FROM logs WHERE id = ";
 
     /*
     /// -----Connection to database

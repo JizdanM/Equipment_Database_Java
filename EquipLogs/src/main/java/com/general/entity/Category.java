@@ -1,6 +1,6 @@
 package com.general.entity;
 
-public class Category {
+public class Category implements DeletableEntity{
     private int id;
     private String category;
 

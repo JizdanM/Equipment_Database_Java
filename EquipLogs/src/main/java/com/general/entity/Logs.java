@@ -2,7 +2,7 @@ package com.general.entity;
 
 import java.sql.Date;
 
-public class Logs {
+public class Logs implements DeletableEntity{
     private int id;
     private Equipment equipment;
     private Student student;
@@ -17,6 +17,7 @@ public class Logs {
         this.returned = returned;
     }
 
+    @Override
     public int getId() {
         return id;
     }
