@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="320.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.StudentsEditController">
+   <children>
+      <AnchorPane fx:id="studentPane" layoutY="14.0" prefHeight="262.0" prefWidth="320.0">
+         <children>
+            <Label layoutX="75.0" layoutY="36.0" text="Nume :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtName" layoutX="128.0" layoutY="33.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="57.0" layoutY="75.0" text="Prenume :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtSurname" layoutX="128.0" layoutY="72.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="75.0" layoutY="115.0" text="Grupa :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtGroup" layoutX="128.0" layoutY="112.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="78.0" layoutY="153.0" text="Email :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtEmail" layoutX="128.0" layoutY="150.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="31.0" layoutY="189.0" text="Nr de telefon :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtPhoneNr" layoutX="128.0" layoutY="186.0" prefHeight="25.0" prefWidth="162.0" />
+         </children></AnchorPane>
+      <Button layoutX="236.0" layoutY="276.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Editează">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

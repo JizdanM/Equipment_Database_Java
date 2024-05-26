@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="340.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.EquipmentEditController">
+   <children>
+      <AnchorPane fx:id="equipPane" layoutY="14.0" prefHeight="282.0" prefWidth="320.0">
+         <children>
+            <Label layoutX="14.0" layoutY="4.0" prefHeight="21.0" prefWidth="186.0" text="Denumirea echipamentului: ">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
+            <TextArea fx:id="txtEquipName" layoutX="14.0" layoutY="27.0" prefHeight="153.0" prefWidth="288.0" AnchorPane.bottomAnchor="102.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="27.0" />
+            <Label layoutX="14.0" layoutY="194.0" text="Denumirea echipamentului: ">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="categoryBox" layoutX="14.0" layoutY="215.0" prefHeight="25.0" prefWidth="288.0" />
+         </children></AnchorPane>
+      <Button layoutX="236.0" layoutY="296.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Editează">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

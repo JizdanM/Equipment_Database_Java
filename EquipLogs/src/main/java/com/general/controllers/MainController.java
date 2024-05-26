@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -176,7 +177,7 @@ public class MainController {
             equipTable.getColumns().addAll(idColumn, categoryColumn);
             equipTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
-            ResultSet output = new RequestDAO().requestData(RequestDAO.REQ_CATEGORY);
+            ResultSet output = new RequestDAO().requestData(RequestDAO.REQ_CATEGORY_ORDERED);
             ObservableList<Category> categoryList = FXCollections.observableArrayList();
 
             while(output.next()){
@@ -218,7 +219,7 @@ public class MainController {
             equipTable.getColumns().addAll(idColumn, nameColumn, surnameColumn, groupColumn, emailColumn, phoneNumberColumn);
             equipTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
-            ResultSet output = new RequestDAO().requestData(RequestDAO.REQ_STUDENTS);
+            ResultSet output = new RequestDAO().requestData(RequestDAO.REQ_STUDENTS_ORDERED);
             ObservableList<Student> studentList = FXCollections.observableArrayList();
 
             while(output.next()){
@@ -359,7 +360,104 @@ public class MainController {
 
     @FXML
     protected void dataEdit() {
+        try {
+            DeletableEntity selectedEquipment = (DeletableEntity) equipTable.getSelectionModel().getSelectedItem();
 
+            if (selectedEquipment != null) {
+                switch (selectedTable) {
+                    case "equipment": {
+                        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(MainApp.class.getResource("EquipmentEditWindow.fxml")));
+                        Parent root = loader.load();
+
+                        EquipmentEditController controller = loader.getController();
+                        controller.setData(selectedEquipment.getId());
+
+                        Scene scene = new Scene(root, 320, 360);
+
+                        Stage primaryStage = new Stage();
+                        primaryStage.setResizable(false);
+                        primaryStage.setTitle("Editeaza datele");
+                        primaryStage.setScene(scene);
+                        primaryStage.initModality(Modality.WINDOW_MODAL);
+                        primaryStage.initOwner(equipTable.getScene().getWindow());
+                        primaryStage.showAndWait();
+
+                        showEquipment();
+                    }
+                    break;
+                    case "category": {
+                        try {
+                            final RequestDAO connection = new RequestDAO();
+                            ResultSet resultSet = connection.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + selectedEquipment.getId());
+                            if (resultSet.next()) {
+                                Optional<String> result = requestString(resultSet.getString("catname"));
+
+                                if (result.isPresent()){
+                                    int affectedRows = connection.updateCategory(result.get(), selectedEquipment.getId());
+                                    if (affectedRows != 0) {
+                                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                        alert.setTitle("Editare cu success");
+                                        alert.setHeaderText(null);
+                                        alert.setContentText("Editarea a fost salvata");
+                                        alert.showAndWait();
+                                    }
+                                }
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        showCategory();
+                    }
+                    break;
+                    case "students": {
+                        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(MainApp.class.getResource("StudentsEditWindow.fxml")));
+                        Parent root = loader.load();
+
+                        StudentsEditController controller = loader.getController();
+                        controller.setData(selectedEquipment.getId());
+
+                        Scene scene = new Scene(root, 320, 360);
+
+                        Stage primaryStage = new Stage();
+                        primaryStage.setResizable(false);
+                        primaryStage.setTitle("Editeaza datele");
+                        primaryStage.setScene(scene);
+                        primaryStage.initModality(Modality.WINDOW_MODAL);
+                        primaryStage.initOwner(equipTable.getScene().getWindow());
+                        primaryStage.showAndWait();
+
+                        showStudents();
+                    }
+                    break;
+                    case "logs": {
+                        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(MainApp.class.getResource("LogsEditWindow.fxml")));
+                        Parent root = loader.load();
+
+                        LogsEditController controller = loader.getController();
+                        controller.setData(selectedEquipment.getId());
+
+                        Scene scene = new Scene(root, 320, 360);
+
+                        Stage primaryStage = new Stage();
+                        primaryStage.setResizable(false);
+                        primaryStage.setTitle("Editeaza datele");
+                        primaryStage.setScene(scene);
+                        primaryStage.initModality(Modality.WINDOW_MODAL);
+                        primaryStage.initOwner(equipTable.getScene().getWindow());
+                        primaryStage.showAndWait();
+
+                        showLogs();
+                    }
+                    break;
+                }
+            } else {
+                showError("Nu ati selectat logul!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
     }
 
     @FXML
@@ -373,7 +471,7 @@ public class MainController {
                         Optional<ButtonType> result = deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_EQUIPMENT + selectedEquipment.getId());
+                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_EQUIPMENT + selectedEquipment.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -389,7 +487,7 @@ public class MainController {
                         Optional<ButtonType> result = deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_CATEGORY + selectedEquipment.getId());
+                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_CATEGORY + selectedEquipment.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -405,7 +503,7 @@ public class MainController {
                         Optional<ButtonType> result = deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_STUDENT + selectedEquipment.getId());
+                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_STUDENT + selectedEquipment.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -421,7 +519,7 @@ public class MainController {
                         Optional<ButtonType> result = deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().updateCall(RequestDAO.DELETE_LOGS + selectedEquipment.getId());
+                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_LOGS + selectedEquipment.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -455,7 +553,7 @@ public class MainController {
             if (selectedEquipment != null) {
                 int id = selectedEquipment.getId();
 
-                int updatedLines = new RequestDAO().updateCall(RequestDAO.RETURN_EQUIPMENT + id);
+                int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.RETURN_EQUIPMENT + id);
                 if (updatedLines != 0){
                     showMessage("Echipamentul a fost returnat");
                     showLogs();
@@ -520,4 +618,23 @@ public class MainController {
         mainStage = stage;
     }
 
+    private static Optional<String> requestString(String catname) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Editarea categoriei");
+        dialog.setHeaderText("Introduceti numele nou pentru categoria editataă");
+        dialog.setContentText("Categoria: ");
+        dialog.getEditor().setText(catname);
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(category -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Confirmare");
+            confirmationAlert.setHeaderText("Ati introdus categoria corect?");
+            confirmationAlert.setContentText("Denumirea categoriei: " + category);
+
+            confirmationAlert.showAndWait();
+        });
+        return result;
+    }
 }

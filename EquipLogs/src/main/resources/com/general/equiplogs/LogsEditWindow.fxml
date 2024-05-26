@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="300.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.LogsEditController">
+   <children>
+      <AnchorPane fx:id="logPane" layoutY="14.0" prefHeight="248.0" prefWidth="320.0">
+         <children>
+            <Label layoutX="16.0" layoutY="14.0" prefHeight="20.0" prefWidth="186.0" text="Echipament :">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="equipmentBox" layoutX="16.0" layoutY="40.0" prefHeight="30.0" prefWidth="288.0" />
+            <Label layoutX="16.0" layoutY="96.0" prefHeight="20.0" prefWidth="186.0" text="Student :">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="studentBox" layoutX="16.0" layoutY="122.0" prefHeight="30.0" prefWidth="288.0" />
+            <Label layoutX="16.0" layoutY="179.0" prefHeight="20.0" prefWidth="186.0" text="Data imprumutului :">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="lendDate" layoutX="16.0" layoutY="199.0" />
+         </children></AnchorPane>
+      <Button layoutX="236.0" layoutY="256.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Editează">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
