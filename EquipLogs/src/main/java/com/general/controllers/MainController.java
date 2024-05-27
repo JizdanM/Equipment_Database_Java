@@ -40,8 +40,6 @@ public class MainController {
     private MenuItem btnShowStudents;
     @FXML
     private MenuItem btnShowLogs;
-    @FXML
-    private MenuItem btnAdd;
 
     @FXML
     private Button btnReturn;
@@ -84,11 +82,6 @@ public class MainController {
         btnShowLogs.setOnAction(event -> {
             showReturnButton();
             showLogs();
-        });
-
-        btnAdd.setOnAction(event -> {
-            hideReturnButton();
-            dataInsertion();
         });
 
         btnEdit.setOnAction(event -> {
@@ -571,12 +564,30 @@ public class MainController {
 
     @FXML
     protected void refreshBtnClick() {
-        // TODO: Figure out how to call the last request and display it
+        switch (selectedTable) {
+            case "equipment": {
+                showEquipment();
+            }
+            break;
+            case "category": {
+                showCategory();
+            }
+            break;
+            case "students": {
+                showStudents();
+            }
+            break;
+            case "logs": {
+                showLogs();
+            }
+            break;
+        }
     }
 
     /*
     /// -----Helper functions
     */
+
     @FXML
     protected void showReturnButton() {
         btnReturn.setOpacity(1);

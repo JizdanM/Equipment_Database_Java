@@ -22,20 +22,15 @@
                   <MenuItem fx:id="btnShowLogs" mnemonicParsing="false" text="Loguri" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Editează">
-                    <items>
-                        <MenuItem fx:id="btnAdd" mnemonicParsing="false" text="Adaugă" />
-                    </items>
-                </Menu>
             </menus>
         </MenuBar>
         <TableView fx:id="equipTable" focusTraversable="false" prefHeight="628.0" prefWidth="1200.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
-      <Button fx:id="btnEdit" focusTraversable="false" layoutX="14.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Editează" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="14.0">
+      <Button fx:id="btnEdit" focusTraversable="false" layoutX="106.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Editează" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="106.0">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="btnDelete" focusTraversable="false" layoutX="106.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Șterge" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="106.0">
+      <Button fx:id="btnDelete" focusTraversable="false" layoutX="198.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Șterge" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="198.0">
          <font>
             <Font size="16.0" />
          </font>
@@ -50,5 +45,10 @@
                 <Font size="16.0" />
             </font>
         </Button>
+      <Button fx:id="btnAdd" focusTraversable="false" layoutX="14.0" layoutY="659.0" mnemonicParsing="false" onAction="#dataInsertion" prefHeight="35.0" prefWidth="82.0" text="Adaugă">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>
