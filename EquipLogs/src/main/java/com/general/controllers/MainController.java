@@ -337,7 +337,7 @@ public class MainController {
     protected void dataInsertion() {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(MainApp.class.getResource("InsertionWindow.fxml")));
-            Scene scene = new Scene(root, 320, 360);
+            Scene scene = new Scene(root, 320, 344);
 
             Stage primaryStage = new Stage();
             primaryStage.setResizable(false);
@@ -365,7 +365,7 @@ public class MainController {
                         EquipmentEditController controller = loader.getController();
                         controller.setData(selectedEquipment.getId());
 
-                        Scene scene = new Scene(root, 320, 360);
+                        Scene scene = new Scene(root, 320, 344);
 
                         Stage primaryStage = new Stage();
                         primaryStage.setResizable(false);
@@ -410,7 +410,7 @@ public class MainController {
                         StudentsEditController controller = loader.getController();
                         controller.setData(selectedEquipment.getId());
 
-                        Scene scene = new Scene(root, 320, 360);
+                        Scene scene = new Scene(root, 320, 344);
 
                         Stage primaryStage = new Stage();
                         primaryStage.setResizable(false);
@@ -430,7 +430,7 @@ public class MainController {
                         LogsEditController controller = loader.getController();
                         controller.setData(selectedEquipment.getId());
 
-                        Scene scene = new Scene(root, 320, 360);
+                        Scene scene = new Scene(root, 320, 344);
 
                         Stage primaryStage = new Stage();
                         primaryStage.setResizable(false);

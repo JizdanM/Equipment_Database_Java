@@ -17,14 +17,16 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="862af146-aff1-4228-b556-41b086f7171a">
-      <console name="EquipLogs" type="STANDARD" schema="public" session="Main"><![CDATA[SELECT * FROM logs]]></console>
+      <console name="EquipLogs" type="STANDARD" schema="public" session="Main"><![CDATA[SELECT * FROM ca]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="862af146-aff1-4228-b556-41b086f7171a" object-ref="consoles/EquipLogs" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="862af146-aff1-4228-b556-41b086f7171a" />

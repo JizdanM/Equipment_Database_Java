@@ -19,6 +19,8 @@ public class LogsEditController {
     private int selectedID;
 
     @FXML
+    private ComboBox<DataItem> categoryBox;
+    @FXML
     private ComboBox<DataItem> equipmentBox;
     @FXML
     private ComboBox<DataItem> studentBox;
@@ -33,14 +35,25 @@ public class LogsEditController {
             if (logResult.next()) {
                 lendDate.setValue(logResult.getDate("lenddate").toLocalDate());
 
+                Map<Integer, String> categories = connection.getCategories();
+                populateComboBox(categories, categoryBox);
+
                 Map<Integer, String> equipment = connection.getEquipment();
                 populateComboBox(equipment, equipmentBox);
 
                 ResultSet equipResult = connection.requestData(RequestDAO.REQ_EQUIPMENT + " WHERE id = " + logResult.getInt("equipment"));
                 if (equipResult.next()) {
-                    for (DataItem item : equipmentBox.getItems()) {
-                        if (item.getId() == equipResult.getInt("id")) {
-                            equipmentBox.setValue(item);
+                    for (DataItem equipmentItem : equipmentBox.getItems()) {
+                        if (equipmentItem.getId() == equipResult.getInt("id")) {
+                            ResultSet results = connection.requestData("SELECT id, catname FROM category WHERE id = (SELECT categoryid FROM equipment WHERE id = " + equipmentItem.getId() + ")");
+                            if (results.next()) {
+                                for (DataItem categoryItem : categoryBox.getItems()) {
+                                    if (categoryItem.getId() == results.getInt("id")) {
+                                        categoryBox.setValue(categoryItem);
+                                    }
+                                }
+                            }
+                            equipmentBox.setValue(equipmentItem);
                             break;
                         }
                     }

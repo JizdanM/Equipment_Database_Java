@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InsertionWindowController {
 
@@ -50,6 +51,8 @@ public class InsertionWindowController {
     @FXML
     private TextField txtPhoneNr;
     @FXML
+    private ComboBox<DataItem> equipCategoryBox;
+    @FXML
     private ComboBox<DataItem> equipmentBox;
     @FXML
     private ComboBox<DataItem> studentBox;
@@ -61,7 +64,6 @@ public class InsertionWindowController {
 
     @FXML
     private void initialize(){
-
         btnCategory.setOnShown(event -> {
             insertionType = "category";
 
@@ -129,8 +131,8 @@ public class InsertionWindowController {
             insertionType = "logs";
 
             try {
-                Map<Integer, String> equipment = connection.getEquipment();
-                populateComboBox(equipment, equipmentBox);
+                Map<Integer, String> categories = connection.getCategories();
+                populateComboBox(categories, equipCategoryBox);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -141,6 +143,21 @@ public class InsertionWindowController {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+
+            AtomicBoolean firstChange = new AtomicBoolean(true);
+            equipCategoryBox.setOnAction(x -> {
+                if (firstChange.get()) {
+                    equipmentBox.setDisable(false);
+                    firstChange.set(false);
+                }
+
+                try {
+                    Map<Integer, String> equipment = connection.getEquipmentByCategory(equipCategoryBox.getSelectionModel().getSelectedItem().getId());
+                    populateComboBox(equipment, equipmentBox);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             btnLogs.hide();
         });

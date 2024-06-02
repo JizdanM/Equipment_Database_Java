@@ -136,27 +136,39 @@ public class RequestDAO {
     }
 
     public Map<Integer, String> getEquipment() throws SQLException {
-        Map<Integer, String> categories = new HashMap<>();
+        Map<Integer, String> equipment = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, equipname FROM equipment");
 
         while (output.next()){
-            categories.put(output.getInt("id"), output.getString("equipname"));
+            equipment.put(output.getInt("id"), output.getString("equipname"));
         }
 
-        return categories;
+        return equipment;
+    }
+
+    public Map<Integer, String> getEquipmentByCategory(int id) throws SQLException {
+        Map<Integer, String> equipment = new HashMap<>();
+        Statement statement = connection.createStatement();
+        ResultSet output = statement.executeQuery("SELECT id, equipname FROM equipment WHERE categoryid = " + id);
+
+        while (output.next()){
+            equipment.put(output.getInt("id"), output.getString("equipname"));
+        }
+
+        return equipment;
     }
 
     public Map<Integer, String> getStudents() throws SQLException {
-        Map<Integer, String> categories = new HashMap<>();
+        Map<Integer, String> logs = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, name, surname FROM students");
 
         while (output.next()){
-            categories.put(output.getInt("id"), output.getString("name") + " " + output.getString("surname"));
+            logs.put(output.getInt("id"), output.getString("name") + " " + output.getString("surname"));
         }
 
-        return categories;
+        return logs;
     }
 
     /*

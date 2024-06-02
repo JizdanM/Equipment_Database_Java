@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="360.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.InsertionWindowController">
+<AnchorPane prefHeight="344.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.InsertionWindowController">
    <children>
       <MenuBar layoutX="65.0" layoutY="52.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -26,7 +26,7 @@
                </items></Menu>
         </menus>
       </MenuBar>
-      <AnchorPane fx:id="equipPane" disable="true" layoutY="25.0" opacity="0.0" prefHeight="282.0" prefWidth="320.0">
+      <AnchorPane fx:id="equipPane" disable="true" layoutY="25.0" opacity="0.0" prefHeight="268.0" prefWidth="320.0">
          <children>
             <Label layoutX="14.0" layoutY="4.0" prefHeight="21.0" prefWidth="186.0" text="Denumirea echipamentului: ">
                <font>
@@ -40,61 +40,67 @@
             </Label>
             <ComboBox fx:id="categoryBox" layoutX="14.0" layoutY="215.0" prefHeight="25.0" prefWidth="288.0" />
          </children></AnchorPane>
-      <AnchorPane fx:id="studentPane" disable="true" layoutY="28.0" opacity="0.0" prefHeight="282.0" prefWidth="320.0">
+      <AnchorPane fx:id="logPane" disable="true" layoutY="27.0" opacity="0.0" prefHeight="268.0" prefWidth="320.0">
          <children>
-            <Label layoutX="75.0" layoutY="55.0" text="Nume :" textAlignment="RIGHT">
+            <Label layoutX="16.0" layoutY="14.0" prefHeight="20.0" prefWidth="186.0" text="Categoria :">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="txtName" layoutX="128.0" layoutY="52.0" prefHeight="25.0" prefWidth="162.0" />
-            <Label layoutX="57.0" layoutY="94.0" text="Prenume :" textAlignment="RIGHT">
+            <ComboBox fx:id="equipCategoryBox" layoutX="16.0" layoutY="40.0" prefHeight="30.0" prefWidth="288.0" />
+            <Label layoutX="16.0" layoutY="75.0" prefHeight="20.0" prefWidth="186.0" text="Echipament :">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="txtSurname" layoutX="128.0" layoutY="91.0" prefHeight="25.0" prefWidth="162.0" />
-            <Label layoutX="75.0" layoutY="134.0" text="Grupa :" textAlignment="RIGHT">
+            <ComboBox fx:id="equipmentBox" disable="true" layoutX="16.0" layoutY="101.0" prefHeight="30.0" prefWidth="288.0" />
+            <Label layoutX="16.0" layoutY="142.0" prefHeight="20.0" prefWidth="186.0" text="Student :">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="txtGroup" layoutX="128.0" layoutY="131.0" prefHeight="25.0" prefWidth="162.0" />
-            <Label layoutX="78.0" layoutY="172.0" text="Email :" textAlignment="RIGHT">
+            <ComboBox fx:id="studentBox" layoutX="16.0" layoutY="168.0" prefHeight="30.0" prefWidth="288.0" />
+            <Label layoutX="16.0" layoutY="208.0" prefHeight="20.0" prefWidth="186.0" text="Data imprumutului :">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="txtEmail" layoutX="128.0" layoutY="169.0" prefHeight="25.0" prefWidth="162.0" />
-            <Label layoutX="31.0" layoutY="208.0" text="Nr de telefon :" textAlignment="RIGHT">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txtPhoneNr" layoutX="128.0" layoutY="205.0" prefHeight="25.0" prefWidth="162.0" />
+            <DatePicker fx:id="lendDate" layoutX="16.0" layoutY="228.0" />
          </children></AnchorPane>
-      <AnchorPane fx:id="logPane" disable="true" layoutY="27.0" opacity="0.0" prefHeight="282.0" prefWidth="320.0">
+      <AnchorPane fx:id="studentPane" layoutY="28.0" prefHeight="268.0" prefWidth="320.0">
          <children>
-            <Label layoutX="16.0" layoutY="36.0" prefHeight="20.0" prefWidth="186.0" text="Echipament :">
+            <Label layoutX="31.0" layoutY="26.0" prefHeight="20.0" prefWidth="89.0" text="Nume :" textAlignment="RIGHT">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox fx:id="equipmentBox" layoutX="16.0" layoutY="62.0" prefHeight="30.0" prefWidth="288.0" />
-            <Label layoutX="16.0" layoutY="118.0" prefHeight="20.0" prefWidth="186.0" text="Student :">
+            <TextField fx:id="txtName" layoutX="128.0" layoutY="23.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="31.0" layoutY="71.0" prefHeight="20.0" prefWidth="89.0" text="Prenume :" textAlignment="RIGHT">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox fx:id="studentBox" layoutX="16.0" layoutY="144.0" prefHeight="30.0" prefWidth="288.0" />
-            <Label layoutX="16.0" layoutY="201.0" prefHeight="20.0" prefWidth="186.0" text="Data imprumutului :">
+            <TextField fx:id="txtSurname" layoutX="128.0" layoutY="68.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="31.0" layoutY="118.0" prefHeight="20.0" prefWidth="89.0" text="Grupa :" textAlignment="RIGHT">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <DatePicker fx:id="lendDate" layoutX="16.0" layoutY="221.0" />
+            <TextField fx:id="txtGroup" layoutX="128.0" layoutY="115.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="30.0" layoutY="161.0" prefHeight="20.0" prefWidth="89.0" text="Email :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtEmail" layoutX="129.0" layoutY="158.0" prefHeight="25.0" prefWidth="162.0" />
+            <Label layoutX="31.0" layoutY="203.0" text="Nr de telefon :" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtPhoneNr" layoutX="128.0" layoutY="200.0" prefHeight="25.0" prefWidth="162.0" />
          </children></AnchorPane>
-      <Button layoutX="238.0" layoutY="316.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Inserare">
+      <Button layoutX="238.0" layoutY="301.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Inserare">
          <font>
             <Font size="14.0" />
          </font>
