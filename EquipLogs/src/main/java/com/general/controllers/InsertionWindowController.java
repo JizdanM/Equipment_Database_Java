@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -121,6 +124,8 @@ public class InsertionWindowController {
         });
 
         btnLogs.setOnShown(event -> {
+            lendDate.setValue(LocalDate.now());
+
             equipPane.setOpacity(0);
             equipPane.setDisable(true);
             studentPane.setOpacity(0);
@@ -170,48 +175,61 @@ public class InsertionWindowController {
         switch (insertionType){
 
             case "equipment":{
-                affectedRows = connection.insertEquipment(txtEquipName.getText(), categoryBox.getValue().getId());
-                if (affectedRows != 0) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Inserare cu success");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Echipamentul nou a fost salvat");
-                    alert.showAndWait();
+                if (!txtEquipName.getText().isEmpty() && categoryBox.getSelectionModel().getSelectedIndex() != -1) {
+                    affectedRows = connection.insertEquipment(txtEquipName.getText(), categoryBox.getValue().getId());
+                    if (affectedRows != 0) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Inserare cu success");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Echipamentul nou a fost salvat");
+                        alert.showAndWait();
 
-                    Stage stage = (Stage) equipPane.getScene().getWindow();
-                    stage.close();
+                        Stage stage = (Stage) equipPane.getScene().getWindow();
+                        stage.close();
+                    }
+                } else {
+                    showMessage("Introduceti datele!");
                 }
             }
             break;
 
             case "student":{
-                affectedRows = connection.insertStudent(txtName.getText(), txtSurname.getText(), txtGroup.getText(), txtEmail.getText(), txtPhoneNr.getText());
-                if (affectedRows != 0) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Inserare cu success");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Studentul nou a fost salvat");
-                    alert.showAndWait();
+                if (!txtName.getText().isEmpty() && !txtSurname.getText().isEmpty() && !txtGroup.getText().isEmpty() && !txtEmail.getText().isEmpty() && !txtPhoneNr.getText().isEmpty()) {
+                    affectedRows = connection.insertStudent(txtName.getText(), txtSurname.getText(), txtGroup.getText(), txtEmail.getText(), txtPhoneNr.getText());
+                    if (affectedRows != 0) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Inserare cu success");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Studentul nou a fost salvat");
+                        alert.showAndWait();
 
-                    Stage stage = (Stage) equipPane.getScene().getWindow();
-                    stage.close();
+                        Stage stage = (Stage) equipPane.getScene().getWindow();
+                        stage.close();
+                    }
+                } else {
+                    showMessage("Introduceti datele!");
                 }
             }
             break;
 
             case "logs":{
                 try {
-                    affectedRows = connection.insertLog(equipmentBox.getValue().getId(), studentBox.getValue().getId(), Date.valueOf(lendDate.getValue()));
-                    if (affectedRows != 0) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Inserare cu success");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Logul nou a fost salvat");
-                        alert.showAndWait();
+                    if (equipmentBox.getSelectionModel().getSelectedIndex() != -1 && studentBox.getSelectionModel().getSelectedIndex() != -1) {
+                        affectedRows = connection.insertLog(equipmentBox.getValue().getId(), studentBox.getValue().getId(), Date.valueOf(lendDate.getValue()));
+                        if (affectedRows != 0) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Inserare cu success");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Logul nou a fost salvat");
+                            alert.showAndWait();
 
-                        Stage stage = (Stage) equipPane.getScene().getWindow();
-                        stage.close();
+                            Stage stage = (Stage) equipPane.getScene().getWindow();
+                            stage.close();
+                        } else {
+                            showMessage("Introduceti datele!");
+                        }
                     }
+
                 } catch (SQLException e) {
                     switch (e.getSQLState()) {
                         case "23505": {

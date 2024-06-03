@@ -8,13 +8,15 @@ public class Logs implements DeletableEntity{
     private Student student;
     private Date lendDate;
     private boolean returned;
+    private Date returnDate;
 
-    public Logs(int id, Equipment equipment, Student student, Date lendDate, boolean returned) {
+    public Logs(int id, Equipment equipment, Student student, Date lendDate, boolean returned, Date returnDate) {
         this.id = id;
         this.equipment = equipment;
         this.student = student;
         this.lendDate = lendDate;
         this.returned = returned;
+        this.returnDate = returnDate;
     }
 
     @Override
@@ -56,5 +58,13 @@ public class Logs implements DeletableEntity{
 
     public void setReturned(boolean returned) {
         this.returned = returned;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
     }
 }

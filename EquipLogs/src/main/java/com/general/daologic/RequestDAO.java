@@ -32,7 +32,7 @@ public class RequestDAO {
 
     // Detailed calls
     public static final String REQ_EQUIPMENT_USR = "SELECT equipment.id, equipment.equipname, category.catname FROM equipment LEFT JOIN category ON equipment.categoryid = category.id ORDER BY equipment.id";
-    public static final String REQ_LOGS_USR = "SELECT logs.id AS log, equipment.id AS equipment, equipname, categoryid AS category, catname, students.id AS student, name, surname, class, email, phonenumber, lenddate, returned " +
+    public static final String REQ_LOGS_USR = "SELECT logs.id AS log, equipment.id AS equipment, equipname, categoryid AS category, catname, students.id AS student, name, surname, class, email, phonenumber, lenddate, returned, returndate " +
             "FROM logs LEFT JOIN equipment ON logs.equipment = equipment.id " +
             "LEFT JOIN category ON equipment.categoryid = category.id " +
             "LEFT JOIN students ON logs.student = students.id ORDER BY logs.id";
@@ -42,6 +42,7 @@ public class RequestDAO {
      */
 
     public static final String RETURN_EQUIPMENT = "UPDATE logs SET returned = true WHERE id = ";
+    public static final String RETURN_DATE = "UPDATE logs SET returndate = ";
 
     /*
     /// -----Deletion calls

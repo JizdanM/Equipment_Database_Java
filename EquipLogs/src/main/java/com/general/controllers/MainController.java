@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -307,8 +310,11 @@ public class MainController {
             TableColumn<Logs, Boolean> returnedColumn = new TableColumn<>("Returnat");
             returnedColumn.setCellValueFactory(new PropertyValueFactory<>("returned"));
 
+            TableColumn<Logs, Date> returnDateColumn = new TableColumn<>("Data returnării");
+            returnDateColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+
             equipTable.getColumns().addAll(idColumn, equipNameColumn, categoryNameColumn, nameColumn, surnameColumn
-                    , studentClassColumn, emailColumn, phoneNumberColumn, lendDateColumn, returnedColumn);
+                    , studentClassColumn, emailColumn, phoneNumberColumn, lendDateColumn, returnedColumn, returnDateColumn);
             equipTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
             ResultSet output = new RequestDAO().requestData(RequestDAO.REQ_LOGS_USR);
@@ -321,7 +327,8 @@ public class MainController {
                         , new Student(output.getInt("student"), output.getString("name")
                                 , output.getString("surname"), output.getString("class")
                                 , output.getString("email"), output.getString("phonenumber"))
-                        , output.getDate("lenddate"), output.getBoolean("returned"));
+                        , output.getDate("lenddate"), output.getBoolean("returned")
+                        , output.getDate("returndate"));
                 logList.add(log);
             }
 
@@ -383,7 +390,7 @@ public class MainController {
                             final RequestDAO connection = new RequestDAO();
                             ResultSet resultSet = connection.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + selectedEquipment.getId());
                             if (resultSet.next()) {
-                                Optional<String> result = requestString(resultSet.getString("catname"));
+                                Optional<String> result = requestString(resultSet.getString("catname"), "Editarea categoriei", "Introduceți numele nou pentru categoria editată", "Categoria: ", "Ați introdus categoria corectă?");
 
                                 if (result.isPresent()){
                                     int affectedRows = connection.updateCategory(result.get(), selectedEquipment.getId());
@@ -541,13 +548,19 @@ public class MainController {
     @FXML
     protected void returnedBtnClick() {
         try {
-            Logs selectedEquipment = (Logs) equipTable.getSelectionModel().getSelectedItem();
+            Logs selectedLog = (Logs) equipTable.getSelectionModel().getSelectedItem();
 
-            if (selectedEquipment != null) {
-                int id = selectedEquipment.getId();
+            if (selectedLog != null) {
+                Optional<LocalDate> result = requestDate(LocalDate.now(), "Introduceți data", "Introduceți data returnării echipamentului", "Ați introdus data corectă?");
+                int updatedDate = 0;
+                if (result.isPresent()) {
+                    updatedDate = new RequestDAO().executeUpdateStatement(RequestDAO.RETURN_DATE + "'" + result.get() + "' WHERE id = " + selectedLog.getId());
+                }
+
+                int id = selectedLog.getId();
 
                 int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.RETURN_EQUIPMENT + id);
-                if (updatedLines != 0){
+                if (updatedLines != 0 && updatedDate != 0){
                     showMessage("Echipamentul a fost returnat");
                     showLogs();
                 } else {
@@ -629,23 +642,58 @@ public class MainController {
         mainStage = stage;
     }
 
-    private static Optional<String> requestString(String catname) {
+    private static Optional<String> requestString(String initialText, String title, String header, String context, String confirmation) {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Editarea categoriei");
-        dialog.setHeaderText("Introduceti numele nou pentru categoria editataă");
-        dialog.setContentText("Categoria: ");
-        dialog.getEditor().setText(catname);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(context);
+        dialog.getEditor().setText(initialText);
 
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(category -> {
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confirmationAlert.setTitle("Confirmare");
-            confirmationAlert.setHeaderText("Ati introdus categoria corect?");
-            confirmationAlert.setContentText("Denumirea categoriei: " + category);
+            confirmationAlert.setHeaderText(confirmation);
+            confirmationAlert.setContentText("Ati introdus: " + category);
 
             confirmationAlert.showAndWait();
         });
+        return result;
+    }
+
+    public static Optional<LocalDate> requestDate(LocalDate initialDate, String title, String header, String confirmation) {
+        Dialog<LocalDate> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+
+        DatePicker datePicker = new DatePicker();
+
+        datePicker.setValue(initialDate);
+
+        VBox vbox = new VBox(datePicker);
+        dialog.getDialogPane().setContent(vbox);
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return datePicker.getValue();
+            }
+            return null;
+        });
+
+        Optional<LocalDate> result = dialog.showAndWait();
+
+        result.ifPresent(date -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Confirmare");
+            confirmationAlert.setHeaderText(confirmation);
+            confirmationAlert.setContentText("Ati introdus: " + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+            confirmationAlert.showAndWait();
+        });
+
         return result;
     }
 }

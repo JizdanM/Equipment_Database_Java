@@ -45,7 +45,7 @@
                 <Font size="16.0" />
             </font>
         </Button>
-      <Button fx:id="btnAdd" focusTraversable="false" layoutX="14.0" layoutY="659.0" mnemonicParsing="false" onAction="#dataInsertion" prefHeight="35.0" prefWidth="82.0" text="Adaugă">
+      <Button fx:id="btnAdd" focusTraversable="false" layoutX="14.0" layoutY="659.0" mnemonicParsing="false" onAction="#dataInsertion" prefHeight="35.0" prefWidth="82.0" text="Adaugă" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="14.0">
          <font>
             <Font size="16.0" />
          </font>
