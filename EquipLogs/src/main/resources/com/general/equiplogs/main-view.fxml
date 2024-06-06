@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="675.0" minWidth="1200.0" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.MainController">
     <children>
-        <MenuBar prefHeight="25.0" prefWidth="1200.0" AnchorPane.topAnchor="0.0">
+        <MenuBar layoutX="-4.0" layoutY="6.0" prefHeight="25.0" prefWidth="534.0" AnchorPane.topAnchor="6.0">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -22,9 +22,54 @@
                   <MenuItem fx:id="btnShowLogs" mnemonicParsing="false" text="Loguri" />
                     </items>
                 </Menu>
+            <Menu mnemonicParsing="false" text="Caută">
+              <items>
+                  <Menu mnemonicParsing="false" text="Elev">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Varsta" />
+                    </items>
+                  </Menu>
+              </items>
+            </Menu>
             </menus>
         </MenuBar>
-        <TableView fx:id="equipTable" focusTraversable="false" prefHeight="628.0" prefWidth="1200.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+        <TableView fx:id="equipTable" disable="true" focusTraversable="false" layoutX="6.0" layoutY="35.0" prefHeight="618.0" prefWidth="1188.0" visible="false" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="35.0">
+         <columns>
+            <TableColumn fx:id="equipIDColumn" prefWidth="94.0" text="ID" />
+            <TableColumn fx:id="equipNameColumn" prefWidth="735.0" text="Echipament" />
+            <TableColumn fx:id="equipCatColumn" minWidth="0.0" prefWidth="370.0" text="Categorie" />
+         </columns></TableView>
+      <TableView fx:id="catTable" disable="true" layoutX="3.0" layoutY="35.0" prefHeight="618.0" prefWidth="1188.0" visible="false" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="35.0">
+        <columns>
+          <TableColumn fx:id="catIDColumn" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="catNameColumn" prefWidth="549.0" text="Categorie" />
+        </columns>
+      </TableView>
+      <TableView fx:id="studTable" disable="true" layoutX="4.0" layoutY="36.0" prefHeight="618.0" prefWidth="1188.0" visible="false" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="35.0">
+        <columns>
+          <TableColumn fx:id="studIDColumn" prefWidth="81.0" text="ID" />
+          <TableColumn fx:id="studNameColumn" prefWidth="202.0" text="Nume" />
+            <TableColumn fx:id="studSurnameColumn" prefWidth="209.0" text="Prenume" />
+            <TableColumn fx:id="studGroupColumn" prefWidth="130.0" text="Grupa" />
+            <TableColumn fx:id="studEmailColumn" prefWidth="420.0" text="Email" />
+            <TableColumn fx:id="studPhoneNumberColumn" prefWidth="157.0" text="NrTelefon" />
+        </columns>
+      </TableView>
+      <TableView fx:id="logTable" disable="true" layoutX="4.0" layoutY="36.0" prefHeight="618.0" prefWidth="1188.0" visible="false" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="35.0">
+        <columns>
+          <TableColumn fx:id="logIDColumn" prefWidth="43.0" text="ID" />
+          <TableColumn fx:id="logEquipColumn" prefWidth="346.0" text="Echipament" />
+            <TableColumn fx:id="logCatColumn" minWidth="0.0" prefWidth="135.0" text="Categorie" />
+            <TableColumn fx:id="logStudNameColumn" prefWidth="94.0" text="Nume" />
+            <TableColumn fx:id="logStudSurnameColumn" prefWidth="124.0" text="Prenume" />
+            <TableColumn fx:id="studentClassColumn" prefWidth="86.0" text="Clasa" />
+            <TableColumn fx:id="logEmailColumn" prefWidth="247.0" text="Email" />
+            <TableColumn fx:id="logPhoneNumberColumn" prefWidth="179.0" text="NrTelefon" />
+            <TableColumn fx:id="logLendDateColumn" prefWidth="140.0" text="Data împrumutării" />
+            <TableColumn fx:id="logReturnedColumn" prefWidth="88.0" text="Returnat" />
+            <TableColumn fx:id="logReturnDateColumn" prefWidth="105.0" text="Data returnării" />
+        </columns>
+      </TableView>
       <Button fx:id="btnEdit" focusTraversable="false" layoutX="106.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Editează" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="106.0">
          <font>
             <Font size="16.0" />
@@ -50,5 +95,15 @@
             <Font size="16.0" />
          </font>
       </Button>
+      <Label layoutX="627.0" layoutY="8.0" prefHeight="20.0" prefWidth="497.0" text="Search :" wrapText="true" AnchorPane.leftAnchor="627.0" AnchorPane.rightAnchor="476.0" AnchorPane.topAnchor="8.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="searchField" layoutX="685.0" layoutY="3.0" prefHeight="25.0" prefWidth="508.0" AnchorPane.leftAnchor="685.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="3.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
     </children>
 </AnchorPane>

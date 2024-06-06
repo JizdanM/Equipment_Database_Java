@@ -13,7 +13,10 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
+        Scene scene = new Scene(fxmlLoader.load(), 1600, 900);
+
+        stage.setMinWidth(1200);
+        stage.setMinHeight(675);
 
         stage.setTitle("Loguri Echipamente");
         stage.setScene(scene);
