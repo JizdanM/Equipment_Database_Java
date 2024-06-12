@@ -2,9 +2,8 @@ package com.general.controllers;
 
 import com.general.daologic.RequestDAO;
 import com.general.entity.DataItem;
-import javafx.event.ActionEvent;
+import com.general.utility.DialogWindowManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
@@ -12,6 +11,7 @@ import javafx.stage.Stage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Optional;
 
 public class EquipmentEditController {
 
@@ -26,8 +26,8 @@ public class EquipmentEditController {
 
     public void setData(int selectedEquipment) {
         selectedID = selectedEquipment;
-        try {
-            ResultSet equipResult = connection.requestData(RequestDAO.REQ_EQUIPMENT + " WHERE id = " + selectedEquipment);
+        Optional<ResultSet> rawData = connection.requestData(RequestDAO.REQ_EQUIPMENT + " WHERE id = " + selectedEquipment);
+        if (rawData.isPresent()) try (ResultSet equipResult = rawData.get()) {
             if (equipResult.next()) {
                 txtEquipName.setText(equipResult.getString("equipname"));
 
@@ -35,28 +35,32 @@ public class EquipmentEditController {
 
                 populateComboBox(categories, categoryBox);
 
-                ResultSet catResult = connection.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + equipResult.getInt("categoryid"));
-                if (catResult.next()) {
-                    for (DataItem item : categoryBox.getItems()) {
-                        if (item.getId() == catResult.getInt("id")) {
-                            categoryBox.setValue(item);
-                            break;
+                Optional<ResultSet> rawDataCategory = connection.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + equipResult.getInt("categoryid"));
+                if (rawDataCategory.isPresent()) try (ResultSet catResult = rawDataCategory.get()) {
+                    if (catResult.next()) {
+                        for (DataItem item : categoryBox.getItems()) {
+                            if (item.getId() == catResult.getInt("id")) {
+                                categoryBox.setValue(item);
+                                break;
+                            }
                         }
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace(System.out);
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace(System.out);
         }
     }
 
     @FXML
-    private void submitBtnClick(ActionEvent event) throws SQLException {
+    private void submitBtnClick() throws SQLException {
         int affectedRows = new RequestDAO().updateEquipment(txtEquipName.getText(), categoryBox.getValue().getId(), selectedID);
         if (affectedRows != 0) {
-            showMessage("Datele au fost editate cu success");
+            DialogWindowManager.showMessage("Datele au fost editate cu success");
         } else {
-            showMessage("Nu s-a primit sa se editeze datele");
+            DialogWindowManager.showMessage("Nu s-a primit sa se editeze datele");
         }
 
         Stage stage = (Stage) txtEquipName.getScene().getWindow();
@@ -68,13 +72,5 @@ public class EquipmentEditController {
         for (Map.Entry<Integer, String> entry : dataMap.entrySet()) {
             comboBox.getItems().add(new DataItem(entry.getKey(), entry.getValue()));
         }
-    }
-
-    private static void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Mesaj");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

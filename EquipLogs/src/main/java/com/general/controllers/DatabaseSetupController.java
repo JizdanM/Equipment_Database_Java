@@ -1,7 +1,7 @@
 package com.general.controllers;
 
+import com.general.utility.DialogWindowManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -22,42 +22,28 @@ public class DatabaseSetupController {
         try {
             setSystemEnvironmentVariable("ELDBName", txtDBName.getText());
             setSystemEnvironmentVariable("ELDBUsername", txtDBUsername.getText());
-            setDBPassword("ELDBPassword", txtDBPassword.getText());
+            setSystemEnvironmentVariable("ELDBPassword", txtDBPassword.getText());
 
-            showMessage("Datele au fost salvate cu success.");
+            DialogWindowManager.showMessage("Datele au fost salvate cu success.");
         } catch (IOException e) {
-            e.printStackTrace();
-            showMessage("Datele nu au putut fi salvate.");
+            e.printStackTrace(System.out);
+            DialogWindowManager.showMessage("Datele nu au putut fi salvate.");
         }
     }
 
     public static void setSystemEnvironmentVariable(String variableName, String variableValue) throws IOException {
-        String command = "cmd /c setx " + variableName + " " + variableValue;
+        String command = "cmd";
+        String argument1 = "/c";
+        String argument2 = "setx";
 
-        Process process = Runtime.getRuntime().exec(command);
+        ProcessBuilder processBuilder = new ProcessBuilder(command, argument1, argument2, variableName, variableValue);
         try {
+            Process process = processBuilder.start();
             process.waitFor();
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-    }
-
-    public static void setDBPassword(String variableName, String variableValue) throws IOException {
-        String command = "cmd /c setx " + variableName + " " + variableValue;
-
-        Process process = Runtime.getRuntime().exec(command);
-        try {
-            process.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Mesaj");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

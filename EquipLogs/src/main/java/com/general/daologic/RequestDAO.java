@@ -1,13 +1,13 @@
 package com.general.daologic;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
 public class RequestDAO {
     // Connection object
-    ConnectDAO connectDAO = new ConnectDAO();
-    Connection connection = connectDAO.getConnection();
+    private final ConnectDAO connectDAO = new ConnectDAO();
+    private final Connection connection = connectDAO.getConnection();
 
     public RequestDAO() {
     }
@@ -67,9 +67,22 @@ public class RequestDAO {
      */
 
     // TODO: Improve the request. Make it return either an array or data, or formated table columns
-    public ResultSet requestData(String requestLine) throws SQLException {
-        Statement statement = connection.createStatement();
-        return statement.executeQuery(requestLine);
+    public Optional<ResultSet> requestData(String requestLine) {
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(requestLine);
+
+            if (resultSet.next()) {
+                return Optional.of(resultSet);
+            } else {
+                resultSet.close();
+                statement.close();
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+            return Optional.empty();
+        }
     }
 
     public int executeUpdateStatement(String requestLine) throws SQLException {
@@ -127,13 +140,36 @@ public class RequestDAO {
     public Map<Integer, String> getCategories() throws SQLException {
         Map<Integer, String> categories = new HashMap<>();
         Statement statement = connection.createStatement();
-        ResultSet output = statement.executeQuery("SELECT id, catname FROM category");
+        ResultSet output = statement.executeQuery("SELECT id, catname FROM category ORDER BY id");
 
         while (output.next()){
             categories.put(output.getInt("id"), output.getString("catname"));
         }
 
         return categories;
+    }
+
+    public Map<Integer, String> getClasses() throws SQLException {
+        Map<Integer, String> classes = new HashMap<>();
+        Statement statement = connection.createStatement();
+        ResultSet output = statement.executeQuery("SELECT id, class FROM students ORDER BY class");
+
+        while (output.next()){
+            classes.put(output.getInt("id"), output.getString("class"));
+        }
+
+        Map<Integer, String> uniqueClasses = new HashMap<>();
+
+        Set<String> uniqueValues = new HashSet<>();
+
+        for (Map.Entry<Integer, String> entry : classes.entrySet()) {
+            if (!uniqueValues.contains(entry.getValue())) {
+                uniqueClasses.put(entry.getKey(), entry.getValue());
+                uniqueValues.add(entry.getValue());
+            }
+        }
+
+        return uniqueClasses;
     }
 
     public Map<Integer, String> getEquipment() throws SQLException {

@@ -2,18 +2,15 @@ package com.general.controllers;
 
 import com.general.daologic.RequestDAO;
 import com.general.entity.DataItem;
-import javafx.event.ActionEvent;
+import com.general.utility.DialogWindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,7 +59,14 @@ public class InsertionWindowController {
     @FXML
     private DatePicker lendDate;
 
-    public InsertionWindowController() throws IOException {
+    MainController parentController;
+
+    public void setParentController(MainController parentController) {
+        this.parentController = parentController;
+    }
+
+    public InsertionWindowController() {
+
     }
 
     @FXML
@@ -81,10 +85,14 @@ public class InsertionWindowController {
                         alert.setHeaderText(null);
                         alert.setContentText("Categoria noua a fost salvata");
                         alert.showAndWait();
+
+                        parentController.showCategory();
+                        Stage stage = (Stage) equipPane.getScene().getWindow();
+                        stage.close();
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
 
             btnCategory.hide();
@@ -169,7 +177,7 @@ public class InsertionWindowController {
     }
 
     @FXML
-    private void submitBtnClick(ActionEvent event) throws SQLException {
+    private void submitBtnClick() throws SQLException {
         int affectedRows;
 
         switch (insertionType){
@@ -184,11 +192,12 @@ public class InsertionWindowController {
                         alert.setContentText("Echipamentul nou a fost salvat");
                         alert.showAndWait();
 
+                        parentController.showEquipment();
                         Stage stage = (Stage) equipPane.getScene().getWindow();
                         stage.close();
                     }
                 } else {
-                    showMessage("Introduceti datele!");
+                    DialogWindowManager.showMessage("Introduceti datele!");
                 }
             }
             break;
@@ -203,11 +212,12 @@ public class InsertionWindowController {
                         alert.setContentText("Studentul nou a fost salvat");
                         alert.showAndWait();
 
+                        parentController.showStudents();
                         Stage stage = (Stage) equipPane.getScene().getWindow();
                         stage.close();
                     }
                 } else {
-                    showMessage("Introduceti datele!");
+                    DialogWindowManager.showMessage("Introduceti datele!");
                 }
             }
             break;
@@ -223,19 +233,17 @@ public class InsertionWindowController {
                             alert.setContentText("Logul nou a fost salvat");
                             alert.showAndWait();
 
+                            parentController.showLogs();
                             Stage stage = (Stage) equipPane.getScene().getWindow();
                             stage.close();
                         } else {
-                            showMessage("Introduceti datele!");
+                            DialogWindowManager.showMessage("Introduceti datele!");
                         }
                     }
 
                 } catch (SQLException e) {
-                    switch (e.getSQLState()) {
-                        case "23505": {
-                            showMessage("Echipamentul nu a fost returnat!");
-                        }
-                        break;
+                    if (e.getSQLState().equals("23505")) {
+                        DialogWindowManager.showMessage("Echipamentul nu a fost returnat!");
                     }
                 }
             }
@@ -267,13 +275,5 @@ public class InsertionWindowController {
         for (Map.Entry<Integer, String> entry : dataMap.entrySet()) {
             comboBox.getItems().add(new DataItem(entry.getKey(), entry.getValue()));
         }
-    }
-
-    private static void showMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Mesaj");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

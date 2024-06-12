@@ -24,9 +24,21 @@
                 </Menu>
             <Menu mnemonicParsing="false" text="Caută">
               <items>
+                  <Menu mnemonicParsing="false" text="Echipament">
+                    <items>
+                      <MenuItem fx:id="btnSrcEquipCategory" mnemonicParsing="false" text="Categorie" />
+                    </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="Elev">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Varsta" />
+                        <MenuItem fx:id="btnSrcStudentGroup" mnemonicParsing="false" text="Grupa" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Loguri">
+                    <items>
+                      <MenuItem fx:id="btnSrcLogsStudent" mnemonicParsing="false" text="Student" />
+                        <MenuItem fx:id="btnSrcLogsLendDate" mnemonicParsing="false" text="Data de împrumut" />
+                        <MenuItem fx:id="btnSrcLogsReturnDate" mnemonicParsing="false" text="Data de returnare" />
                     </items>
                   </Menu>
               </items>

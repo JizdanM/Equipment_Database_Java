@@ -22,8 +22,6 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("images/database.png")));
         stage.show();
-
-        new MainController().setStage(stage);
     }
 
     // Window launch
