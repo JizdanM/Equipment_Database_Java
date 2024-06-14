@@ -1,13 +1,9 @@
 package com.general.utility;
 
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.WindowEvent;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

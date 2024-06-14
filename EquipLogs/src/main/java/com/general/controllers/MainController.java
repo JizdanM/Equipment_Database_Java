@@ -4,6 +4,7 @@ import com.general.daologic.RequestDAO;
 import com.general.entity.*;
 import com.general.equiplogs.MainApp;
 import com.general.utility.DialogWindowManager;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -84,6 +85,8 @@ public class MainController {
     TableColumn<Logs, Boolean> logReturnedColumn = new TableColumn<>("Returnat");
     @FXML
     TableColumn<Logs, Date> logReturnDateColumn = new TableColumn<>("Data returnării");
+    @FXML
+    TableColumn<Logs, Boolean> logNotesColumn = new TableColumn<>("Data returnării");
 
     @FXML
     private MenuItem btnSetting;
@@ -119,6 +122,8 @@ public class MainController {
     private Button btnEdit;
     @FXML
     private Button btnDelete;
+    @FXML
+    private Button btnNotes;
 
     private ObservableList<Equipment> equipmentCache;
     private ObservableList<Category> categoryCache;
@@ -140,7 +145,7 @@ public class MainController {
 
         btnSrcEquipCategory.setOnAction(event -> {
             try {
-                Optional<String> result = DialogWindowManager.showComboBoxDialog(new RequestDAO().getCategories());
+                Optional<String> result = DialogWindowManager.showComboBoxDialog(RequestDAO.getCategories());
                 if (result.isPresent()) {
                     showEquipment();
                     FilteredList<Equipment> filteredData = new FilteredList<>(equipmentCache, b -> true);
@@ -158,7 +163,7 @@ public class MainController {
 
         btnSrcStudentGroup.setOnAction(event -> {
             try {
-                Optional<String> result = DialogWindowManager.showComboBoxDialog(new RequestDAO().getClasses());
+                Optional<String> result = DialogWindowManager.showComboBoxDialog(RequestDAO.getClasses());
                 if (result.isPresent()) {
                     showStudents();
                     FilteredList<Student> filteredData = new FilteredList<>(studentCache, b -> true);
@@ -176,7 +181,7 @@ public class MainController {
 
         btnSrcLogsStudent.setOnAction(event -> {
             try {
-                Optional<String> result = DialogWindowManager.showComboBoxDialog(new RequestDAO().getStudents());
+                Optional<String> result = DialogWindowManager.showComboBoxDialog(RequestDAO.getStudents());
                 if (result.isPresent()) {
                     showLogs();
                     FilteredList<Logs> filteredData = new FilteredList<>(logsCache, b -> true);
@@ -288,6 +293,22 @@ public class MainController {
         btnEdit.setOnAction(event -> dataEdit());
 
         btnDelete.setOnAction(event -> dataDeletion());
+
+        logTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                if (newSelection.getNote() != null && !newSelection.getNote().isEmpty() && btnNotes.isDisable()) {
+                    btnNotes.setDisable(false);
+                    btnNotes.setOpacity(1);
+                } else {
+                    btnNotes.setDisable(true);
+                    btnNotes.setOpacity(0);
+                }
+            }
+        });
+
+        btnNotes.setOnAction(event -> {
+            DialogWindowManager.showMessage(logTable.getSelectionModel().getSelectedItem().getNote());
+        });
     }
 
     /*
@@ -331,13 +352,14 @@ public class MainController {
         equipTable.setVisible(true);
         equipTable.setDisable(false);
         try {
-            Optional<ResultSet> rawData = new RequestDAO().requestData(RequestDAO.REQ_EQUIPMENT_USR);
+            Optional<ResultSet> rawData = RequestDAO.requestData(RequestDAO.REQ_EQUIPMENT_USR);
             if (rawData.isPresent()) try (ResultSet output = rawData.get()) {
                 ObservableList<Equipment> equipList = FXCollections.observableArrayList();
 
                 equipTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
                 do {
-                    Equipment equip = new Equipment(output.getInt("id"), output.getString("equipname"), output.getString("catname"));
+                    Equipment equip = new Equipment(output.getInt("id"), output.getString("equipname")
+                            , output.getInt("categoryid"), output.getString("catname"));
                     equipList.add(equip);
                 } while(output.next());
 
@@ -372,7 +394,7 @@ public class MainController {
             catIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
             catNameColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
 
-            Optional<ResultSet> rawData = new RequestDAO().requestData(RequestDAO.REQ_CATEGORY_ORDERED);
+            Optional<ResultSet> rawData = RequestDAO.requestData(RequestDAO.REQ_CATEGORY_ORDERED);
             if (rawData.isPresent()) try (ResultSet output = rawData.get()) {
                 ObservableList<Category> categoryList = FXCollections.observableArrayList();
 
@@ -406,7 +428,7 @@ public class MainController {
         studTable.setDisable(false);
         studTable.setVisible(true);
         try {
-            Optional<ResultSet> rawData = new RequestDAO().requestData(RequestDAO.REQ_STUDENTS_ORDERED);
+            Optional<ResultSet> rawData = RequestDAO.requestData(RequestDAO.REQ_STUDENTS_ORDERED);
             if (rawData.isPresent()) try (ResultSet output = rawData.get()) {
                 ObservableList<Student> studentList = FXCollections.observableArrayList();
 
@@ -450,7 +472,7 @@ public class MainController {
         logTable.setVisible(true);
         try {
 
-            Optional<ResultSet> rawData = new RequestDAO().requestData(RequestDAO.REQ_LOGS_USR);
+            Optional<ResultSet> rawData = RequestDAO.requestData(RequestDAO.REQ_LOGS_USR);
             if (rawData.isPresent()) try (ResultSet output = rawData.get()) {
                 ObservableList<Logs> logList = FXCollections.observableArrayList();
 
@@ -458,68 +480,27 @@ public class MainController {
                 do {
                     Logs log = new Logs(output.getInt("log")
                             , new Equipment(output.getInt("equipment"), output.getString("equipname")
-                            , output.getString("catname"))
+                            , output.getInt("categoryid"), output.getString("catname"))
                             , new Student(output.getInt("student"), output.getString("name")
                             , output.getString("surname"), output.getString("class")
                             , output.getString("email"), output.getString("phonenumber"))
                             , output.getDate("lenddate"), output.getBoolean("returned")
-                            , output.getDate("returndate"));
+                            , output.getDate("returndate"), output.getString("notes"));
                     logList.add(log);
                 } while(output.next());
 
                 logIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-                logEquipColumn.setCellValueFactory(cellData -> {
-                    Equipment equipment = cellData.getValue().getEquipment();
-                    if (equipment != null) {
-                        return new SimpleStringProperty(equipment.getEquipName());
-                    }
-                    return new SimpleStringProperty("");
-                });
-                logCatColumn.setCellValueFactory(cellData -> {
-                    Equipment equipment = cellData.getValue().getEquipment();
-                    if (equipment != null) {
-                        return new SimpleStringProperty(equipment.getCategory());
-                    }
-                    return new SimpleStringProperty("");
-                });
-                logStudNameColumn.setCellValueFactory(cellData -> {
-                    Student student = cellData.getValue().getStudent();
-                    if (student != null) {
-                        return new SimpleStringProperty(student.getName());
-                    }
-                    return new SimpleStringProperty("");
-                });
-                logStudSurnameColumn.setCellValueFactory(cellData -> {
-                    Student student = cellData.getValue().getStudent();
-                    if (student != null) {
-                        return new SimpleStringProperty(student.getSurname());
-                    }
-                    return new SimpleStringProperty("");
-                });
-                studentClassColumn.setCellValueFactory(cellData -> {
-                    Student student = cellData.getValue().getStudent();
-                    if (student != null) {
-                        return new SimpleStringProperty(student.getGroup());
-                    }
-                    return new SimpleStringProperty("");
-                });
-                logEmailColumn.setCellValueFactory(cellData -> {
-                    Student student = cellData.getValue().getStudent();
-                    if (student != null) {
-                        return new SimpleStringProperty(student.getEmail());
-                    }
-                    return new SimpleStringProperty("");
-                });
-                logPhoneNumberColumn.setCellValueFactory(cellData -> {
-                    Student student = cellData.getValue().getStudent();
-                    if (student != null) {
-                        return new SimpleStringProperty(student.getPhoneNr());
-                    }
-                    return new SimpleStringProperty("");
-                });
+                logEquipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEquipment() != null ? cellData.getValue().getEquipment().getEquipName() : ""));
+                logCatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEquipment() != null ? cellData.getValue().getEquipment().getCategory() : ""));
+                logStudNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStudent() != null ? cellData.getValue().getStudent().getName() : " "));
+                logStudSurnameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStudent() != null ? cellData.getValue().getStudent().getSurname() : " "));
+                studentClassColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStudent() != null ? cellData.getValue().getStudent().getGroup() : " "));
+                logEmailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStudent() != null ? cellData.getValue().getStudent().getEmail() : " "));
+                logPhoneNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStudent() != null ? cellData.getValue().getStudent().getPhoneNr() : ""));
                 logLendDateColumn.setCellValueFactory(new PropertyValueFactory<>("lendDate"));
                 logReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("returned"));
                 logReturnDateColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+                logNotesColumn.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().getNote() != null));
 
                 logTable.setItems(logList);
                 selectedTable = "logs";
@@ -587,30 +568,22 @@ public class MainController {
                 case "category": {
                     if (catTable.getSelectionModel().getSelectedItem() != null) {
                         Category selectedCategory = catTable.getSelectionModel().getSelectedItem();
-                        final RequestDAO connection = new RequestDAO();
-                        Optional<ResultSet> rawData = connection.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + selectedCategory.getId());
-                        if (rawData.isPresent()) try (ResultSet resultSet = rawData.get()) {
-                            if (resultSet.next()) {
-                                Optional<String> result = DialogWindowManager.requestString(resultSet.getString("catname"), "Editarea categoriei", "Introduceți numele nou pentru categoria editată", "Categoria: ", "Ați introdus categoria corectă?");
+                        Optional<String> result = DialogWindowManager.requestString(selectedCategory.getCategory(), "Editarea categoriei", "Introduceți numele nou pentru categoria editată", "Categoria: ", "Ați introdus categoria corectă?");
 
-                                if (result.isPresent()){
-                                    int affectedRows = connection.updateCategory(result.get(), selectedCategory.getId());
-                                    if (affectedRows != 0) {
-                                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                        alert.setTitle("Editare cu success");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Editarea a fost salvata");
-                                        alert.showAndWait();
-                                    }
-                                }
+                        if (result.isPresent()){
+                            int affectedRows = RequestDAO.updateCategory(result.get(), selectedCategory.getId());
+                            if (affectedRows != 0) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Editare cu success");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Editarea a fost salvata");
+                                alert.showAndWait();
                             }
-                        } catch (SQLException e) {
-                            e.printStackTrace(System.out);
                         }
 
                         showCategory();
                     } else {
-                        DialogWindowManager.showError("Nu ati selectat echipamentul pentru editare!");
+                        DialogWindowManager.showError("Nu ati selectat categoria pentru editare!");
                     }
                 }
                 break;
@@ -636,7 +609,7 @@ public class MainController {
 
                         showStudents();
                     } else {
-                        DialogWindowManager.showError("Nu ati selectat echipamentul pentru editare!");
+                        DialogWindowManager.showError("Nu ati selectat studentul pentru editare!");
                     }
                 }
                 break;
@@ -650,7 +623,7 @@ public class MainController {
                         LogsEditController controller = loader.getController();
                         controller.setData(selectedLog.getId());
 
-                        Scene scene = new Scene(root, 320, 344);
+                        Scene scene = new Scene(root, 320, 410);
 
                         Stage primaryStage = new Stage();
                         primaryStage.setResizable(false);
@@ -662,7 +635,7 @@ public class MainController {
 
                         showLogs();
                     } else {
-                        DialogWindowManager.showError("Nu ati selectat echipamentul pentru editare!");
+                        DialogWindowManager.showError("Nu ati selectat logul pentru editare!");
                     }
                 }
                 break;
@@ -685,7 +658,7 @@ public class MainController {
                         Optional<ButtonType> result = DialogWindowManager.deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_EQUIPMENT + selectedEquipment.getId());
+                            int updatedLines = RequestDAO.executeUpdateStatement(RequestDAO.DELETE_EQUIPMENT + selectedEquipment.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -704,7 +677,7 @@ public class MainController {
                         Optional<ButtonType> result = DialogWindowManager.deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_CATEGORY + selectedCategory.getId());
+                            int updatedLines = RequestDAO.executeUpdateStatement(RequestDAO.DELETE_CATEGORY + selectedCategory.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -724,7 +697,7 @@ public class MainController {
                         Optional<ButtonType> result = DialogWindowManager.deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_STUDENT + selectedStudent.getId());
+                            int updatedLines = RequestDAO.executeUpdateStatement(RequestDAO.DELETE_STUDENT + selectedStudent.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -743,7 +716,7 @@ public class MainController {
                         Optional<ButtonType> result = DialogWindowManager.deleteConfirmationWindow();
 
                         if (result.isPresent() && result.get() == ButtonType.OK){
-                            int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.DELETE_LOGS + selectedLog.getId());
+                            int updatedLines = RequestDAO.executeUpdateStatement(RequestDAO.DELETE_LOGS + selectedLog.getId());
                             if (updatedLines != 0) {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Stergere");
@@ -893,12 +866,12 @@ public class MainController {
                 Optional<LocalDate> result = DialogWindowManager.requestDate(LocalDate.now(), "Introduceți data", "Introduceți data returnării echipamentului", "Ați introdus data corectă?");
                 int updatedDate = 0;
                 if (result.isPresent()) {
-                    updatedDate = new RequestDAO().executeUpdateStatement(RequestDAO.RETURN_DATE + "'" + result.get() + "' WHERE id = " + selectedLog.getId());
+                    updatedDate = RequestDAO.executeUpdateStatement(RequestDAO.RETURN_DATE + "'" + result.get() + "' WHERE id = " + selectedLog.getId());
                 }
 
                 int id = selectedLog.getId();
 
-                int updatedLines = new RequestDAO().executeUpdateStatement(RequestDAO.RETURN_EQUIPMENT + id);
+                int updatedLines = RequestDAO.executeUpdateStatement(RequestDAO.RETURN_EQUIPMENT + id);
                 if (updatedLines != 0 && updatedDate != 0){
                     DialogWindowManager.showMessage("Echipamentul a fost returnat");
                     showLogs();

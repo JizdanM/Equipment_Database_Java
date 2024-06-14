@@ -6,6 +6,16 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="675.0" minWidth="1200.0" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.MainController">
     <children>
+      <Label layoutX="627.0" layoutY="8.0" prefHeight="20.0" prefWidth="497.0" text="Search :" wrapText="true" AnchorPane.leftAnchor="627.0" AnchorPane.rightAnchor="476.0" AnchorPane.topAnchor="8.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="searchField" layoutX="685.0" layoutY="3.0" prefHeight="25.0" prefWidth="508.0" AnchorPane.leftAnchor="685.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="3.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
         <MenuBar layoutX="-4.0" layoutY="6.0" prefHeight="25.0" prefWidth="534.0" AnchorPane.topAnchor="6.0">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
@@ -80,14 +90,25 @@
             <TableColumn fx:id="logLendDateColumn" prefWidth="140.0" text="Data împrumutării" />
             <TableColumn fx:id="logReturnedColumn" prefWidth="88.0" text="Returnat" />
             <TableColumn fx:id="logReturnDateColumn" prefWidth="105.0" text="Data returnării" />
+            <TableColumn fx:id="logNotesColumn" prefWidth="75.0" text="Notițe" />
         </columns>
       </TableView>
+      <Button fx:id="btnAdd" focusTraversable="false" layoutX="14.0" layoutY="659.0" mnemonicParsing="false" onAction="#dataInsertion" prefHeight="35.0" prefWidth="82.0" text="Adaugă" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="14.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
       <Button fx:id="btnEdit" focusTraversable="false" layoutX="106.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Editează" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="106.0">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
       <Button fx:id="btnDelete" focusTraversable="false" layoutX="198.0" layoutY="659.0" mnemonicParsing="false" onAction="#refreshBtnClick" prefHeight="35.0" prefWidth="82.0" text="Șterge" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="198.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnNotes" disable="true" focusTraversable="false" layoutX="1316.0" layoutY="859.0" mnemonicParsing="false" opacity="0.0" prefHeight="35.0" prefWidth="67.0" text="Notița">
          <font>
             <Font size="16.0" />
          </font>
@@ -102,20 +123,5 @@
                 <Font size="16.0" />
             </font>
         </Button>
-      <Button fx:id="btnAdd" focusTraversable="false" layoutX="14.0" layoutY="659.0" mnemonicParsing="false" onAction="#dataInsertion" prefHeight="35.0" prefWidth="82.0" text="Adaugă" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="14.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <Label layoutX="627.0" layoutY="8.0" prefHeight="20.0" prefWidth="497.0" text="Search :" wrapText="true" AnchorPane.leftAnchor="627.0" AnchorPane.rightAnchor="476.0" AnchorPane.topAnchor="8.0">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="searchField" layoutX="685.0" layoutY="3.0" prefHeight="25.0" prefWidth="508.0" AnchorPane.leftAnchor="685.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="3.0">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
     </children>
 </AnchorPane>

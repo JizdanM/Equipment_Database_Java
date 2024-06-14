@@ -15,7 +15,6 @@ import java.util.Optional;
 
 public class EquipmentEditController {
 
-    private final RequestDAO connection = new RequestDAO();
     private int selectedID;
 
     @FXML
@@ -26,28 +25,24 @@ public class EquipmentEditController {
 
     public void setData(int selectedEquipment) {
         selectedID = selectedEquipment;
-        Optional<ResultSet> rawData = connection.requestData(RequestDAO.REQ_EQUIPMENT + " WHERE id = " + selectedEquipment);
+        Optional<ResultSet> rawData = RequestDAO.requestData(RequestDAO.REQ_EQUIPMENT + " WHERE id = " + selectedEquipment);
         if (rawData.isPresent()) try (ResultSet equipResult = rawData.get()) {
-            if (equipResult.next()) {
-                txtEquipName.setText(equipResult.getString("equipname"));
+            txtEquipName.setText(equipResult.getString("equipname"));
 
-                Map<Integer, String> categories = connection.getCategories();
+            Map<Integer, String> categories = RequestDAO.getCategories();
 
-                populateComboBox(categories, categoryBox);
+            populateComboBox(categories, categoryBox);
 
-                Optional<ResultSet> rawDataCategory = connection.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + equipResult.getInt("categoryid"));
-                if (rawDataCategory.isPresent()) try (ResultSet catResult = rawDataCategory.get()) {
-                    if (catResult.next()) {
-                        for (DataItem item : categoryBox.getItems()) {
-                            if (item.getId() == catResult.getInt("id")) {
-                                categoryBox.setValue(item);
-                                break;
-                            }
-                        }
+            Optional<ResultSet> rawDataCategory = RequestDAO.requestData(RequestDAO.REQ_CATEGORY + " WHERE id = " + equipResult.getInt("categoryid"));
+            if (rawDataCategory.isPresent()) try (ResultSet catResult = rawDataCategory.get()) {
+                for (DataItem item : categoryBox.getItems()) {
+                    if (item.getId() == catResult.getInt("id")) {
+                        categoryBox.setValue(item);
+                        break;
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace(System.out);
                 }
+            } catch (SQLException e) {
+                e.printStackTrace(System.out);
             }
         } catch (SQLException e) {
             e.printStackTrace(System.out);
@@ -56,7 +51,7 @@ public class EquipmentEditController {
 
     @FXML
     private void submitBtnClick() throws SQLException {
-        int affectedRows = new RequestDAO().updateEquipment(txtEquipName.getText(), categoryBox.getValue().getId(), selectedID);
+        int affectedRows = RequestDAO.updateEquipment(txtEquipName.getText(), categoryBox.getValue().getId(), selectedID);
         if (affectedRows != 0) {
             DialogWindowManager.showMessage("Datele au fost editate cu success");
         } else {

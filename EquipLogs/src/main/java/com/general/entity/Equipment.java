@@ -1,11 +1,24 @@
 package com.general.entity;
 
-public class Equipment extends Category implements DeletableEntity {
+public class Equipment implements DeletableEntity {
+    private int id;
     private String equipName;
+    private String category;
+    private int catId;
 
-    public Equipment(int id, String equipName, String category) {
-        super(id, category);
+    public Equipment(int id, String equipName, int catID, String category) {
+        this.id = id;
         this.equipName = equipName;
+        this.catId = catID;
+        this.category = category;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEquipName() {
@@ -16,8 +29,19 @@ public class Equipment extends Category implements DeletableEntity {
         this.equipName = equipName;
     }
 
-    @Override
-    public int getId() {
-        return super.getId();
+    public int getCatId() {
+        return catId;
+    }
+
+    public void setCatId(int catId) {
+        this.catId = catId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InsertionWindowController {
 
-    private final RequestDAO connection = new RequestDAO();
     private String insertionType;
 
     @FXML
@@ -78,7 +77,7 @@ public class InsertionWindowController {
                 Optional<String> result = requestString();
 
                 if (result.isPresent()){
-                    int affectedRows = connection.insertCategory(result.get());
+                    int affectedRows = RequestDAO.insertCategory(result.get());
                     if (affectedRows != 0) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Inserare cu success");
@@ -109,7 +108,7 @@ public class InsertionWindowController {
             insertionType = "equipment";
 
             try {
-                Map<Integer, String> categories = connection.getCategories();
+                Map<Integer, String> categories = RequestDAO.getCategories();
                 populateComboBox(categories, categoryBox);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -144,14 +143,14 @@ public class InsertionWindowController {
             insertionType = "logs";
 
             try {
-                Map<Integer, String> categories = connection.getCategories();
+                Map<Integer, String> categories = RequestDAO.getCategories();
                 populateComboBox(categories, equipCategoryBox);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
 
             try {
-                Map<Integer, String> students = connection.getStudents();
+                Map<Integer, String> students = RequestDAO.getStudents();
                 populateComboBox(students, studentBox);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -165,7 +164,7 @@ public class InsertionWindowController {
                 }
 
                 try {
-                    Map<Integer, String> equipment = connection.getEquipmentByCategory(equipCategoryBox.getSelectionModel().getSelectedItem().getId());
+                    Map<Integer, String> equipment = RequestDAO.getEquipmentByCategory(equipCategoryBox.getSelectionModel().getSelectedItem().getId());
                     populateComboBox(equipment, equipmentBox);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -184,7 +183,7 @@ public class InsertionWindowController {
 
             case "equipment":{
                 if (!txtEquipName.getText().isEmpty() && categoryBox.getSelectionModel().getSelectedIndex() != -1) {
-                    affectedRows = connection.insertEquipment(txtEquipName.getText(), categoryBox.getValue().getId());
+                    affectedRows = RequestDAO.insertEquipment(txtEquipName.getText(), categoryBox.getValue().getId());
                     if (affectedRows != 0) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Inserare cu success");
@@ -204,7 +203,7 @@ public class InsertionWindowController {
 
             case "student":{
                 if (!txtName.getText().isEmpty() && !txtSurname.getText().isEmpty() && !txtGroup.getText().isEmpty() && !txtEmail.getText().isEmpty() && !txtPhoneNr.getText().isEmpty()) {
-                    affectedRows = connection.insertStudent(txtName.getText(), txtSurname.getText(), txtGroup.getText(), txtEmail.getText(), txtPhoneNr.getText());
+                    affectedRows = RequestDAO.insertStudent(txtName.getText(), txtSurname.getText(), txtGroup.getText(), txtEmail.getText(), txtPhoneNr.getText());
                     if (affectedRows != 0) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Inserare cu success");
@@ -225,7 +224,7 @@ public class InsertionWindowController {
             case "logs":{
                 try {
                     if (equipmentBox.getSelectionModel().getSelectedIndex() != -1 && studentBox.getSelectionModel().getSelectedIndex() != -1) {
-                        affectedRows = connection.insertLog(equipmentBox.getValue().getId(), studentBox.getValue().getId(), Date.valueOf(lendDate.getValue()));
+                        affectedRows = RequestDAO.insertLog(equipmentBox.getValue().getId(), studentBox.getValue().getId(), Date.valueOf(lendDate.getValue()));
                         if (affectedRows != 0) {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Inserare cu success");

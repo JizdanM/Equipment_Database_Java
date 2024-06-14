@@ -6,8 +6,8 @@ import java.util.*;
 
 public class RequestDAO {
     // Connection object
-    private final ConnectDAO connectDAO = new ConnectDAO();
-    private final Connection connection = connectDAO.getConnection();
+    private static final ConnectDAO connectDAO = new ConnectDAO();
+    private static final Connection connection = connectDAO.getConnection();
 
     public RequestDAO() {
     }
@@ -31,8 +31,8 @@ public class RequestDAO {
     public static final String REQ_LOGS = "SELECT * FROM logs";
 
     // Detailed calls
-    public static final String REQ_EQUIPMENT_USR = "SELECT equipment.id, equipment.equipname, category.catname FROM equipment LEFT JOIN category ON equipment.categoryid = category.id ORDER BY equipment.id";
-    public static final String REQ_LOGS_USR = "SELECT logs.id AS log, equipment.id AS equipment, equipname, categoryid AS category, catname, students.id AS student, name, surname, class, email, phonenumber, lenddate, returned, returndate " +
+    public static final String REQ_EQUIPMENT_USR = "SELECT equipment.id, equipment.equipname, equipment.categoryid ,category.catname FROM equipment LEFT JOIN category ON equipment.categoryid = category.id ORDER BY equipment.id";
+    public static final String REQ_LOGS_USR = "SELECT logs.id AS log, equipment.id AS equipment, equipname, categoryid, catname, students.id AS student, name, surname, class, email, phonenumber, lenddate, returned, returndate, notes " +
             "FROM logs LEFT JOIN equipment ON logs.equipment = equipment.id " +
             "LEFT JOIN category ON equipment.categoryid = category.id " +
             "LEFT JOIN students ON logs.student = students.id ORDER BY logs.id";
@@ -60,14 +60,13 @@ public class RequestDAO {
     public static final String UPDATE_CATEGORY = "UPDATE category SET catname = ? WHERE id = ?";
     public static final String UPDATE_EQUIPMENT = "UPDATE equipment SET equipname = ?, categoryid = ? WHERE id = ?";
     public static final String UPDATE_STUDENT = "UPDATE students SET name = ?, surname = ?, class = ?, email = ?, phonenumber = ? WHERE id = ?";
-    public static final String UPDATE_LOGS = "UPDATE logs SET equipment = ?, student = ?, lenddate = ? WHERE id = ?";
+    public static final String UPDATE_LOGS = "UPDATE logs SET equipment = ?, student = ?, lenddate = ?, notes = ? WHERE id = ?";
 
     /*
     /// -----Connection to database
      */
 
-    // TODO: Improve the request. Make it return either an array or data, or formated table columns
-    public Optional<ResultSet> requestData(String requestLine) {
+    public static Optional<ResultSet> requestData(String requestLine) {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(requestLine);
@@ -85,12 +84,12 @@ public class RequestDAO {
         }
     }
 
-    public int executeUpdateStatement(String requestLine) throws SQLException {
+    public static int executeUpdateStatement(String requestLine) throws SQLException {
         Statement statement = connection.createStatement();
         return statement.executeUpdate(requestLine);
     }
 
-    public int updateCategory(String catname, int id) throws SQLException {
+    public static int updateCategory(String catname, int id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CATEGORY)) {
             preparedStatement.setString(1, catname);
             preparedStatement.setInt(2, id);
@@ -99,7 +98,7 @@ public class RequestDAO {
         }
     }
 
-    public int updateEquipment(String equipname, int categoryid, int id) throws SQLException {
+    public static int updateEquipment(String equipname, int categoryid, int id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_EQUIPMENT)) {
             preparedStatement.setString(1, equipname);
             preparedStatement.setInt(2, categoryid);
@@ -109,7 +108,7 @@ public class RequestDAO {
         }
     }
 
-    public int updateStudents(String name, String surname, String group, String email, String phonenumber, int id) throws SQLException {
+    public static int updateStudents(String name, String surname, String group, String email, String phonenumber, int id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_STUDENT)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
@@ -122,12 +121,17 @@ public class RequestDAO {
         }
     }
 
-    public int updateLogs(int equipment, int student, Date date, int id) throws SQLException {
+    public static int updateLogs(int equipment, int student, Date date, String note, int id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_LOGS)) {
             preparedStatement.setInt(1, equipment);
             preparedStatement.setInt(2, student);
             preparedStatement.setDate(3, date);
-            preparedStatement.setInt(4, id);
+            if (note.isEmpty()) {
+                preparedStatement.setString(4, null);
+            } else {
+                preparedStatement.setString(4, note);
+            }
+            preparedStatement.setInt(5, id);
 
             return preparedStatement.executeUpdate();
         }
@@ -137,7 +141,7 @@ public class RequestDAO {
     /// -----Data request
      */
 
-    public Map<Integer, String> getCategories() throws SQLException {
+    public static Map<Integer, String> getCategories() throws SQLException {
         Map<Integer, String> categories = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, catname FROM category ORDER BY id");
@@ -149,7 +153,7 @@ public class RequestDAO {
         return categories;
     }
 
-    public Map<Integer, String> getClasses() throws SQLException {
+    public static Map<Integer, String> getClasses() throws SQLException {
         Map<Integer, String> classes = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, class FROM students ORDER BY class");
@@ -172,7 +176,7 @@ public class RequestDAO {
         return uniqueClasses;
     }
 
-    public Map<Integer, String> getEquipment() throws SQLException {
+    public static Map<Integer, String> getEquipment() throws SQLException {
         Map<Integer, String> equipment = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, equipname FROM equipment");
@@ -184,7 +188,7 @@ public class RequestDAO {
         return equipment;
     }
 
-    public Map<Integer, String> getEquipmentByCategory(int id) throws SQLException {
+    public static Map<Integer, String> getEquipmentByCategory(int id) throws SQLException {
         Map<Integer, String> equipment = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, equipname FROM equipment WHERE categoryid = " + id);
@@ -196,7 +200,7 @@ public class RequestDAO {
         return equipment;
     }
 
-    public Map<Integer, String> getStudents() throws SQLException {
+    public static Map<Integer, String> getStudents() throws SQLException {
         Map<Integer, String> logs = new HashMap<>();
         Statement statement = connection.createStatement();
         ResultSet output = statement.executeQuery("SELECT id, name, surname FROM students");
@@ -212,28 +216,28 @@ public class RequestDAO {
     /// -----Inserttion function
      */
 
-    public int insertCategory(String categoryName) throws SQLException {
+    public static int insertCategory(String categoryName) throws SQLException {
         final String INSERT_CATEGORY = "INSERT INTO category(catname) VALUES ('" + categoryName + "')";
 
         Statement statement = connection.createStatement();
         return statement.executeUpdate(INSERT_CATEGORY);
     }
 
-    public int insertEquipment(String equipmentName, int categoryID) throws SQLException {
+    public static int insertEquipment(String equipmentName, int categoryID) throws SQLException {
         final String INSERT_EQUIPMENT = "INSERT INTO equipment(equipname, categoryid) VALUES ('" + equipmentName + "', " + categoryID + ")";
 
         Statement statement = connection.createStatement();
         return statement.executeUpdate(INSERT_EQUIPMENT);
     }
 
-    public int insertStudent(String name, String surname, String group, String email, String phoneNr) throws SQLException {
+    public static int insertStudent(String name, String surname, String group, String email, String phoneNr) throws SQLException {
         final String INSERT_STUDENT = "INSERT INTO students(name, surname, class, email, phonenumber) VALUES ('" + name + "', '" + surname + "', '" + group + "', '" + email + "', '" + phoneNr + "')";
 
         Statement statement = connection.createStatement();
         return statement.executeUpdate(INSERT_STUDENT);
     }
 
-    public int insertLog(int equipmentID, int studentID, Date lenddate) throws SQLException {
+    public static int insertLog(int equipmentID, int studentID, Date lenddate) throws SQLException {
         final String INSERT_LOG = "INSERT INTO logs(equipment, student, lenddate, returned) VALUES (" + equipmentID + ", " + studentID + ", '" + lenddate + "', false)";
 
         Statement statement = connection.createStatement();

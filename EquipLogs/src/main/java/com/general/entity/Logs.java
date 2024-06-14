@@ -9,14 +9,16 @@ public class Logs implements DeletableEntity{
     private Date lendDate;
     private boolean returned;
     private Date returnDate;
+    private String note;
 
-    public Logs(int id, Equipment equipment, Student student, Date lendDate, boolean returned, Date returnDate) {
+    public Logs(int id, Equipment equipment, Student student, Date lendDate, boolean returned, Date returnDate, String note) {
         this.id = id;
         this.equipment = equipment;
         this.student = student;
         this.lendDate = lendDate;
         this.returned = returned;
         this.returnDate = returnDate;
+        this.note = note;
     }
 
     @Override
@@ -66,5 +68,26 @@ public class Logs implements DeletableEntity{
 
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    /*
+    ** Functions for testing
+     */
+
+    @Override
+    public String toString() {
+        return  "         ID: " + getId() + "\n" +
+                "  Equipment: " + getEquipment().getEquipName() + "\n" +
+                "  Categorie: " + getEquipment().getCategory() + "\n" +
+                "    Student: " + getStudent().getName() + " " + getStudent().getSurname() + "\n" +
+                "       Note: " + getNote() + "\n";
     }
 }

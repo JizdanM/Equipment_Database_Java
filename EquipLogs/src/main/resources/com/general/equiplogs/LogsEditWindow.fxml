@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="300.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.LogsEditController">
+<AnchorPane prefHeight="410.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.general.controllers.LogsEditController">
    <children>
-      <AnchorPane fx:id="logPane" layoutY="14.0" prefHeight="248.0" prefWidth="320.0">
+      <AnchorPane fx:id="logPane" layoutY="14.0" prefHeight="341.0" prefWidth="320.0">
          <children>
             <Label layoutX="16.0" layoutY="4.0" prefHeight="20.0" prefWidth="186.0" text="Categoria :">
                <font>
@@ -32,8 +32,14 @@
                </font>
             </Label>
             <DatePicker fx:id="lendDate" layoutX="16.0" layoutY="203.0" />
+            <Label layoutX="16.0" layoutY="238.0" prefHeight="20.0" prefWidth="186.0" text="Notiță :">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="txtNotes" layoutX="16.0" layoutY="258.0" prefHeight="73.0" prefWidth="288.0" />
          </children></AnchorPane>
-      <Button layoutX="236.0" layoutY="256.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Editează">
+      <Button layoutX="236.0" layoutY="365.0" mnemonicParsing="false" onAction="#submitBtnClick" text="Editează">
          <font>
             <Font size="14.0" />
          </font>
