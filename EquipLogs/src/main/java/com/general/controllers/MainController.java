@@ -122,8 +122,6 @@ public class MainController {
     private Button btnEdit;
     @FXML
     private Button btnDelete;
-    @FXML
-    private Button btnNotes;
 
     private ObservableList<Equipment> equipmentCache;
     private ObservableList<Category> categoryCache;
@@ -293,22 +291,6 @@ public class MainController {
         btnEdit.setOnAction(event -> dataEdit());
 
         btnDelete.setOnAction(event -> dataDeletion());
-
-        logTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                if (newSelection.getNote() != null && !newSelection.getNote().isEmpty() && btnNotes.isDisable()) {
-                    btnNotes.setDisable(false);
-                    btnNotes.setOpacity(1);
-                } else {
-                    btnNotes.setDisable(true);
-                    btnNotes.setOpacity(0);
-                }
-            }
-        });
-
-        btnNotes.setOnAction(event -> {
-            DialogWindowManager.showMessage(logTable.getSelectionModel().getSelectedItem().getNote());
-        });
     }
 
     /*

@@ -2,7 +2,6 @@ package com.general.controllers;
 
 import com.general.daologic.RequestDAO;
 import com.general.entity.DataItem;
-import com.general.entity.Logs;
 import com.general.utility.DialogWindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
